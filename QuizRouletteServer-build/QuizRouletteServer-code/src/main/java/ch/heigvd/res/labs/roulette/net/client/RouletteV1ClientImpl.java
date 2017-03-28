@@ -2,6 +2,8 @@ package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
+import ch.heigvd.res.labs.roulette.net.protocol.ByeCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.LoadCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.net.protocol.InfoCommandResponse;
@@ -33,11 +35,16 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   }
 
   @Override
-  public void disconnect() throws IOException {
+  public ByeCommandResponse disconnect() throws IOException {
     outToServer.println(RouletteV1Protocol.CMD_BYE);
+
+    ByeCommandResponse bcr = JsonObjectMapper.parseJson(inFromServer.readLine(), ByeCommandResponse.class);
+    inFromServer.readLine();
+
     outToServer.close();
     inFromServer.close();
     clientS.close();
+    return bcr;
   }
 
   @Override
@@ -49,25 +56,27 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
   }
 
   @Override
-  public void loadStudent(String fullname) throws IOException {
+  public LoadCommandResponse loadStudent(String fullname) throws IOException {
     outToServer.println(RouletteV1Protocol.CMD_LOAD);
     outToServer.println(fullname);
     outToServer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
     outToServer.flush();
-    inFromServer.readLine(); //Flushing the SEND and ENDOFDATA responses from server
+    LoadCommandResponse lcr = JsonObjectMapper.parseJson(inFromServer.readLine(), LoadCommandResponse.class);
     inFromServer.readLine();
+    return lcr;
   }
 
   @Override
-  public void loadStudents(List<Student> students) throws IOException {
+  public LoadCommandResponse loadStudents(List<Student> students) throws IOException {
     outToServer.println(RouletteV1Protocol.CMD_LOAD);
     for (Student s : students) {
       outToServer.println(s.getFullname());
     }
     outToServer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
     outToServer.flush();
-    inFromServer.readLine(); //Flushing the SEND and ENDOFDATA responses from server
+    LoadCommandResponse lcr = JsonObjectMapper.parseJson(inFromServer.readLine(), LoadCommandResponse.class);
     inFromServer.readLine();
+    return lcr;
   }
 
   @Override
