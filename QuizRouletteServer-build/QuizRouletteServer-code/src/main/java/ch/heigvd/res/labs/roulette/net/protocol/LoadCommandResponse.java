@@ -6,8 +6,8 @@ package ch.heigvd.res.labs.roulette.net.protocol;
  * Date : 28.03.17
  */
 public class LoadCommandResponse {
-    private int numberOfNewStudents;
     private String status;
+    private int numberOfNewStudents;
 
     public void setNumberOfNewStudents(int n) {
         numberOfNewStudents = n;
