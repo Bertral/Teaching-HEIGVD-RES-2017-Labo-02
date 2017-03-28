@@ -14,13 +14,13 @@ import java.util.logging.Logger;
 
 /**
  * This class implements the client side of the protocol specification (version 1).
- * 
+ *
  * @author Olivier Liechti
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
   private Socket clientS;
-  private PrintWriter outToServer;
-  private BufferedReader inFromServer;
+  protected PrintWriter outToServer;
+  protected BufferedReader inFromServer;
 
   private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
