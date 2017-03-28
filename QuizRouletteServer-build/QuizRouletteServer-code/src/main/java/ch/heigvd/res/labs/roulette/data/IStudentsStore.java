@@ -52,8 +52,9 @@ public interface IStudentsStore {
    * line is used as the student full name.
    *
    * @param reader where we read student data from
+   * @return an int of status. -1 fail otherwise the number of students loaded
    * @throws IOException
    */
-  public void importData(BufferedReader reader) throws IOException;
+  public int importData(BufferedReader reader) throws IOException;
 
 }

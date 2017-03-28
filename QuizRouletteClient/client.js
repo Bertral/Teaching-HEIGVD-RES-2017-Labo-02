@@ -1,7 +1,7 @@
 var net = require('net');
 fs = require('fs');
 
-var HOST = '127.0.0.1';
+var HOST = '10.192.92.42';
 var PORT = 1313;
 
 var client = new net.Socket();
