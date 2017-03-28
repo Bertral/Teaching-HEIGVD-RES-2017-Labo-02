@@ -5,17 +5,9 @@ package ch.heigvd.res.labs.roulette.net.protocol;
  * Author(s) : Antoine Friant
  * Date : 28.03.17
  */
-public class LoadCommandResponse {
-    private int numberOfNewStudents;
+public class ByeCommandResponse {
     private String status;
-
-    public void setNumberOfNewStudents(int n) {
-        numberOfNewStudents = n;
-    }
-
-    public int getNumberOfNewStudents() {
-        return numberOfNewStudents;
-    }
+    private int numberOfCommands;
 
     public String getStatus() {
         return status;
@@ -23,5 +15,13 @@ public class LoadCommandResponse {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getNumberOfCommands() {
+        return numberOfCommands;
+    }
+
+    public void setNumberOfCommands(int numberOfCommands) {
+        this.numberOfCommands = numberOfCommands;
     }
 }
