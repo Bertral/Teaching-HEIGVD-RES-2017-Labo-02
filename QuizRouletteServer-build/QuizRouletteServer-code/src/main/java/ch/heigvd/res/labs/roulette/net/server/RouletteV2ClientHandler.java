@@ -40,7 +40,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
     boolean done = false;
     while (!done && ((command = reader.readLine()) != null)) {
       LOG.log(Level.INFO, "COMMAND: {0}", command);
-      cntCommand++;
+      boolean commandIsValid = true;
       switch (command.toUpperCase()) {
         case RouletteV2Protocol.CMD_RANDOM:
           RandomCommandResponse rcResponse = new RandomCommandResponse();
@@ -96,9 +96,10 @@ public class RouletteV2ClientHandler implements IClientHandler {
         default:
           writer.println("Huh? please use HELP if you don't know what commands are available.");
           writer.flush();
-          cntCommand--; //we don't want a failed command to be countedgit
+          commandIsValid = false;
           break;
       }
+      if (commandIsValid) cntCommand++;
       writer.flush();
     }
   }
