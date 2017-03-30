@@ -65,9 +65,8 @@ public class RouletteV2ClientHandler implements IClientHandler {
           writer.println(RouletteV2Protocol.RESPONSE_LOAD_START);
           writer.flush();
           int status = store.importData(reader);
-          writer.println();
 
-          if (status < 0) {
+          if (status == -1) {
             lcResponse.setStatus(RouletteV2Protocol.STATUS_FAIL);
           } else {
             lcResponse.setStatus(RouletteV2Protocol.STATUS_SUCCESS);

@@ -37,13 +37,14 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
     @Override
     public LoadCommandResponse loadStudent(String fullname) throws IOException {
-        outToServer.println(RouletteV1Protocol.CMD_LOAD);
-        inFromServer.readLine();
+        outToServer.println(RouletteV2Protocol.CMD_LOAD);
         outToServer.println(fullname);
-        outToServer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+        outToServer.println(RouletteV2Protocol.CMD_LOAD_ENDOFDATA_MARKER);
         outToServer.flush();
-        inFromServer.readLine();
+
+        inFromServer.readLine(); //"Send your data"
         LoadCommandResponse lcr = JsonObjectMapper.parseJson(inFromServer.readLine(), LoadCommandResponse.class);
+
         return lcr;
     }
 
@@ -55,7 +56,8 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
         }
         outToServer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
         outToServer.flush();
-        inFromServer.readLine();
+        inFromServer.readLine(); //"Send your data"
+
         LoadCommandResponse lcr = JsonObjectMapper.parseJson(inFromServer.readLine(), LoadCommandResponse.class);
         return lcr;
     }
