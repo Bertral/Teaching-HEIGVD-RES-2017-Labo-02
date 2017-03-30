@@ -95,7 +95,6 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         outToServer.println(RouletteV1Protocol.CMD_INFO);
         outToServer.flush();
         InfoCommandResponse info = JsonObjectMapper.parseJson(inFromServer.readLine(), InfoCommandResponse.class);
-        System.out.println(info.getNumberOfStudents());
         return info.getNumberOfStudents();
     }
 
