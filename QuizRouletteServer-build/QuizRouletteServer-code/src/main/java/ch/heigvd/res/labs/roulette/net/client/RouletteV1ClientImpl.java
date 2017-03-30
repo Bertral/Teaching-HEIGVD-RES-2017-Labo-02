@@ -20,89 +20,89 @@ import java.util.logging.Logger;
  * @author Olivier Liechti
  */
 public class RouletteV1ClientImpl implements IRouletteV1Client {
-  private Socket clientS;
-  protected PrintWriter outToServer;
-  protected BufferedReader inFromServer;
+    protected Socket clientS;
+    protected PrintWriter outToServer;
+    protected BufferedReader inFromServer;
 
-  private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
+    private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
-  @Override
-  public void connect(String server, int port) throws IOException {
-    clientS = new Socket(server, port);
-    outToServer = new PrintWriter(clientS.getOutputStream());
-    inFromServer = new BufferedReader(new InputStreamReader(clientS.getInputStream()));
-    inFromServer.readLine(); // To pass the fisrt line that says "Hello..."
-  }
-
-  @Override
-  public ByeCommandResponse disconnect() throws IOException {
-    outToServer.println(RouletteV1Protocol.CMD_BYE);
-
-    ByeCommandResponse bcr = JsonObjectMapper.parseJson(inFromServer.readLine(), ByeCommandResponse.class);
-    inFromServer.readLine();
-
-    outToServer.close();
-    inFromServer.close();
-    clientS.close();
-    return bcr;
-  }
-
-  @Override
-  public boolean isConnected() {
-    if (clientS != null) {
-      return clientS.isConnected();
+    @Override
+    public void connect(String server, int port) throws IOException {
+        clientS = new Socket(server, port);
+        outToServer = new PrintWriter(clientS.getOutputStream());
+        inFromServer = new BufferedReader(new InputStreamReader(clientS.getInputStream()));
+        inFromServer.readLine(); // To pass the fisrt line that says "Hello..."
     }
-    return false;
-  }
 
-  @Override
-  public LoadCommandResponse loadStudent(String fullname) throws IOException {
-    outToServer.println(RouletteV1Protocol.CMD_LOAD);
-    outToServer.println(fullname);
-    outToServer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
-    outToServer.flush();
-    LoadCommandResponse lcr = JsonObjectMapper.parseJson(inFromServer.readLine(), LoadCommandResponse.class);
-    inFromServer.readLine();
-    return lcr;
-  }
+    @Override
+    public ByeCommandResponse disconnect() throws IOException {
+        outToServer.println(RouletteV1Protocol.CMD_BYE);
 
-  @Override
-  public LoadCommandResponse loadStudents(List<Student> students) throws IOException {
-    outToServer.println(RouletteV1Protocol.CMD_LOAD);
-    for (Student s : students) {
-      outToServer.println(s.getFullname());
+        ByeCommandResponse bcr = JsonObjectMapper.parseJson(inFromServer.readLine(), ByeCommandResponse.class);
+        inFromServer.readLine();
+
+        outToServer.close();
+        inFromServer.close();
+        clientS.close();
+        return bcr;
     }
-    outToServer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
-    outToServer.flush();
-    LoadCommandResponse lcr = JsonObjectMapper.parseJson(inFromServer.readLine(), LoadCommandResponse.class);
-    inFromServer.readLine();
-    return lcr;
-  }
 
-  @Override
-  public Student pickRandomStudent() throws EmptyStoreException, IOException {
-    if (getNumberOfStudents() == 0) {
-      throw new EmptyStoreException();
-    } else {
-      outToServer.println(RouletteV1Protocol.CMD_RANDOM);
-      outToServer.flush();
-      return JsonObjectMapper.parseJson(inFromServer.readLine(), Student.class);
+    @Override
+    public boolean isConnected() {
+        if (clientS != null) {
+            return clientS.isConnected();
+        }
+        return false;
     }
-  }
 
-  @Override
-  public int getNumberOfStudents() throws IOException {
-    outToServer.println(RouletteV1Protocol.CMD_INFO);
-    outToServer.flush();
-    InfoCommandResponse info = JsonObjectMapper.parseJson(inFromServer.readLine(), InfoCommandResponse.class);
-    return info.getNumberOfStudents();
-  }
+    @Override
+    public LoadCommandResponse loadStudent(String fullname) throws IOException {
+        outToServer.println(RouletteV1Protocol.CMD_LOAD);
+        outToServer.println(fullname);
+        outToServer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+        outToServer.flush();
+        inFromServer.readLine();
+        inFromServer.readLine();
+        return null;
+    }
 
-  @Override
-  public String getProtocolVersion() throws IOException {
-    outToServer.println(RouletteV1Protocol.CMD_INFO);
-    outToServer.flush();
-    InfoCommandResponse info = JsonObjectMapper.parseJson(inFromServer.readLine(), InfoCommandResponse.class);
-    return info.getProtocolVersion();
-  }
+    @Override
+    public LoadCommandResponse loadStudents(List<Student> students) throws IOException {
+        outToServer.println(RouletteV1Protocol.CMD_LOAD);
+        for (Student s : students) {
+            outToServer.println(s.getFullname());
+        }
+        outToServer.println(RouletteV1Protocol.CMD_LOAD_ENDOFDATA_MARKER);
+        outToServer.flush();
+        inFromServer.readLine();
+        inFromServer.readLine();
+        return null;
+    }
+
+    @Override
+    public Student pickRandomStudent() throws EmptyStoreException, IOException {
+        if (getNumberOfStudents() == 0) {
+            throw new EmptyStoreException();
+        } else {
+            outToServer.println(RouletteV1Protocol.CMD_RANDOM);
+            outToServer.flush();
+            return JsonObjectMapper.parseJson(inFromServer.readLine(), Student.class);
+        }
+    }
+
+    @Override
+    public int getNumberOfStudents() throws IOException {
+        outToServer.println(RouletteV1Protocol.CMD_INFO);
+        outToServer.flush();
+        InfoCommandResponse info = JsonObjectMapper.parseJson(inFromServer.readLine(), InfoCommandResponse.class);
+        return info.getNumberOfStudents();
+    }
+
+    @Override
+    public String getProtocolVersion() throws IOException {
+        outToServer.println(RouletteV1Protocol.CMD_INFO);
+        outToServer.flush();
+        InfoCommandResponse info = JsonObjectMapper.parseJson(inFromServer.readLine(), InfoCommandResponse.class);
+        return info.getProtocolVersion();
+    }
 }
