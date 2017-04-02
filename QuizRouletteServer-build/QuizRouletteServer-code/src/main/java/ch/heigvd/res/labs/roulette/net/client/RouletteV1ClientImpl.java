@@ -23,6 +23,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
     protected Socket clientS;
     protected PrintWriter outToServer;
     protected BufferedReader inFromServer;
+    protected boolean isConnected = false;
 
     private static final Logger LOG = Logger.getLogger(RouletteV1ClientImpl.class.getName());
 
@@ -32,6 +33,7 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         outToServer = new PrintWriter(clientS.getOutputStream());
         inFromServer = new BufferedReader(new InputStreamReader(clientS.getInputStream()));
         inFromServer.readLine(); // To pass the fisrt line that says "Hello..."
+        isConnected = true;
     }
 
     @Override
@@ -39,20 +41,16 @@ public class RouletteV1ClientImpl implements IRouletteV1Client {
         outToServer.println(RouletteV1Protocol.CMD_BYE);
         outToServer.flush();
 
-        ByeCommandResponse bcr = JsonObjectMapper.parseJson(inFromServer.readLine(), ByeCommandResponse.class);
-
         outToServer.close();
         inFromServer.close();
         clientS.close();
-        return bcr;
+        isConnected = false;
+        return null;
     }
 
     @Override
     public boolean isConnected() {
-        if (clientS != null) {
-            return clientS.isConnected();
-        }
-        return false;
+        return isConnected;
     }
 
     @Override

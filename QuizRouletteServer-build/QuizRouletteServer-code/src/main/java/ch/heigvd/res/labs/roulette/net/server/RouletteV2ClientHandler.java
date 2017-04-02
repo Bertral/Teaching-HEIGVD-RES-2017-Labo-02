@@ -87,7 +87,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
         case RouletteV2Protocol.CMD_BYE:
           ByeCommandResponse bcResponse = new ByeCommandResponse();
           bcResponse.setStatus(RouletteV2Protocol.STATUS_SUCCESS);
-          bcResponse.setNumberOfCommands(cntCommand);
+          bcResponse.setNumberOfCommands(++cntCommand);
           writer.println(JsonObjectMapper.toJson(bcResponse));
           writer.println();
           done = true;
@@ -98,7 +98,7 @@ public class RouletteV2ClientHandler implements IClientHandler {
           commandIsValid = false;
           break;
       }
-      if (commandIsValid) cntCommand++;
+      if (commandIsValid && !done) cntCommand++;
       writer.flush();
     }
   }

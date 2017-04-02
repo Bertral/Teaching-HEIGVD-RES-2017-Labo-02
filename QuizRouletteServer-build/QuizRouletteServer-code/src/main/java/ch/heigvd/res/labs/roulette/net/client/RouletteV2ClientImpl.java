@@ -3,15 +3,12 @@ package ch.heigvd.res.labs.roulette.net.client;
 import ch.heigvd.res.labs.roulette.data.JsonObjectMapper;
 import ch.heigvd.res.labs.roulette.data.Student;
 import ch.heigvd.res.labs.roulette.data.StudentsList;
+import ch.heigvd.res.labs.roulette.net.protocol.ByeCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.LoadCommandResponse;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV1Protocol;
 import ch.heigvd.res.labs.roulette.net.protocol.RouletteV2Protocol;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.List;
 
 /**
@@ -60,5 +57,19 @@ public class RouletteV2ClientImpl extends RouletteV1ClientImpl implements IRoule
 
         LoadCommandResponse lcr = JsonObjectMapper.parseJson(inFromServer.readLine(), LoadCommandResponse.class);
         return lcr;
+    }
+
+    @Override
+    public ByeCommandResponse disconnect() throws IOException {
+        outToServer.println(RouletteV1Protocol.CMD_BYE);
+        outToServer.flush();
+
+        ByeCommandResponse bcr = JsonObjectMapper.parseJson(inFromServer.readLine(), ByeCommandResponse.class);
+
+        outToServer.close();
+        inFromServer.close();
+        clientS.close();
+        isConnected = false;
+        return bcr;
     }
 }
