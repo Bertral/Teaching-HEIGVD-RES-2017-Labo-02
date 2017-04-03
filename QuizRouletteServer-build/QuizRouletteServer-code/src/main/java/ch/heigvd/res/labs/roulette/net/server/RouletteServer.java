@@ -80,12 +80,11 @@ public class RouletteServer {
    * ephemeral port
    */
   public RouletteServer(String protocolVersion) {
-    this.listenPort = -1;
-    this.protocolVersion = protocolVersion;
+    this(-1, protocolVersion);
   }
 
   public void startServer() throws IOException {
-    if (serverSocket == null || serverSocket.isBound() == false) {
+    if (serverSocket == null || !serverSocket.isBound()) {
       if (listenPort == -1) {
         bindOnEphemeralPort();
       } else {
@@ -143,7 +142,7 @@ public class RouletteServer {
    * @return the port on which client connection requests are accepted
    */
   public int getPort() {
-    return serverSocket.getLocalPort();
+    return serverSocket == null ? listenPort : serverSocket.getLocalPort();
   }
 
   /**

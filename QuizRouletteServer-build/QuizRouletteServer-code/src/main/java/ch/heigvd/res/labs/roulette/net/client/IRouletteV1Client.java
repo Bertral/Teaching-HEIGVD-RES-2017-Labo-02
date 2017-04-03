@@ -2,6 +2,9 @@ package ch.heigvd.res.labs.roulette.net.client;
 
 import ch.heigvd.res.labs.roulette.data.EmptyStoreException;
 import ch.heigvd.res.labs.roulette.data.Student;
+import ch.heigvd.res.labs.roulette.net.protocol.ByeCommandResponse;
+import ch.heigvd.res.labs.roulette.net.protocol.LoadCommandResponse;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -26,7 +29,7 @@ public interface IRouletteV1Client {
    *
    * @throws IOException
    */
-  public void disconnect() throws IOException;
+  public ByeCommandResponse disconnect() throws IOException;
 
   /**
    * Checks if the client is connected with the server
@@ -41,7 +44,7 @@ public interface IRouletteV1Client {
    * @param fullname the student's full name
    * @throws IOException
    */
-  public void loadStudent(String fullname) throws IOException;
+  public LoadCommandResponse loadStudent(String fullname) throws IOException;
 
   /**
    * Adds a list of students in the server database, by issuing the 'LOAD'
@@ -50,7 +53,7 @@ public interface IRouletteV1Client {
    * @param students
    * @throws IOException
    */
-  public void loadStudents(List<Student> students) throws IOException;
+  public LoadCommandResponse loadStudents(List<Student> students) throws IOException;
 
   /**
    * Asks the server to select a random student, by issuing the 'RANDOM' command
